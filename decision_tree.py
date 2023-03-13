@@ -1,4 +1,5 @@
 import numpy as np
+from Dataset import Dataset
 
 class Decision_tree:
 
@@ -33,10 +34,11 @@ def information_gain(X, y):
                 else:
                     number_occurences[X[j, i]] = 1
         
-        total = number_occurences.items().apply(lambda x: x[1]).sum()
+        total = sum([x[1] for x in list(number_occurences.items())])
         probabilities = {k: v/total for k, v in number_occurences.items()}
         print(probabilities)
 
 d = Dataset()
 d.load(filename='notas.csv')
+information_gain(d.X, d.y)
 

@@ -64,6 +64,8 @@ class Dataset:
         self.X = np.array(data)[:, :-1]
         self.y = np.array(data)[:, -1]
 
+        print(self.X)
+
         if label_name:
             self.label_name = label_name
 
@@ -72,9 +74,8 @@ class Dataset:
 
         if len(arr.shape) == 1:
             unique_vals, encoded_arr[:] = np.unique(arr[:], return_inverse=True)
-            print(f'PASSEI AQUI  {arr}')
-            mask = np.isnan(arr[:])
-            encoded_arr[:] = np.where(mask, np.nan, encoded_arr[:])
+            #mask = np.isnan(arr[:])
+            #encoded_arr[:] = np.where(mask, np.nan, encoded_arr[:])
         else: 
             for i in range(arr.shape[1]):
                 unique_vals, encoded_arr[:,i] = np.unique(arr[:,i], return_inverse=True)
