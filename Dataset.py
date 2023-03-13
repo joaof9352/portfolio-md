@@ -45,21 +45,17 @@ class Dataset:
         """
         self.__read_datatypes(filename, sep)
 
-        numeric_data = np.genfromtxt(filename, delimiter=sep, usecols=self.nums, skip_header=True)
-        categorical_data = np.genfromtxt(filename, dtype='U', delimiter=sep, usecols=self.cats, skip_header=True)
+        numeric_data = np.genfromtxt(filename, delimiter=sep, usecols=self.nums, skip_header=True, filling_values=np.nan, missing_values='')
+        categorical_data = np.genfromtxt(filename, delimiter=sep, usecols=self.cats, skip_header=True, filling_values=np.nan, missing_values='')
         
         # encode categorical_data
         categorical_data = self.label_encode(categorical_data)
-        print(f'===============> {numeric_data.shape}')
-        print(f'===============> {categorical_data.shape}')
+
         if numeric_data.ndim == 1:
             numeric_data = numeric_data.reshape(-1, 1)
 
         if categorical_data.ndim == 1:
             categorical_data = categorical_data.reshape(-1, 1)
-
-        print(f'===============> {numeric_data.shape}')
-        print(f'===============> {categorical_data.shape}')
 
         data = np.empty_like(np.hstack((numeric_data, categorical_data)))
         data[:, self.nums] = numeric_data
@@ -76,10 +72,15 @@ class Dataset:
 
         if len(arr.shape) == 1:
             unique_vals, encoded_arr[:] = np.unique(arr[:], return_inverse=True)
+            print(f'PASSEI AQUI  {arr}')
+            mask = np.isnan(arr[:])
+            encoded_arr[:] = np.where(mask, np.nan, encoded_arr[:])
         else: 
             for i in range(arr.shape[1]):
                 unique_vals, encoded_arr[:,i] = np.unique(arr[:,i], return_inverse=True)
-        
+                mask = np.isnan(arr[:,i])
+                encoded_arr[:,i] = np.where(mask, np.nan, encoded_arr[:,i])
+
         return encoded_arr
 
     def describe(self):
@@ -92,13 +93,13 @@ class Dataset:
         print(f'Label values: {np.unique(self.y)}')
 
         for i in range(self.X.shape[1]):
-            col = self.X[:, i].astype(np.float)
+            col = self.X[:, i].astype(float)
             print(f'Feature "{self.feature_names[i]}":')
             print(f'  Type: {col.dtype}')
-            print(f'  Min: {np.min(col)}')
-            print(f'  Max: {np.max(col)}')
-            print(f'  Mean: {np.mean(col)}')
-            print(f'  Std: {np.std(col)}')
+            print(f'  Min: {np.nanmin(col)}')
+            print(f'  Max: {np.nanmax(col)}')
+            print(f'  Mean: {np.nanmean(col)}')
+            print(f'  Std: {np.nanstd(col)}')
             print(f'  Number of missing values: {np.sum(np.isnan(col))}')
 
     def count_missing_values(self):
