@@ -12,7 +12,7 @@ class Decision_tree:
     def predict(self, X):
         pass
 
-    def _information_gain(self, X, y):
+    def _entropy(self, X, y):
         for i in range(X.shape[1]):
             number_occurences = {}
             for j in range(X.shape[0]):
@@ -22,10 +22,22 @@ class Decision_tree:
                     number_occurences[X[j, i]] = 1
         
         total = number_occurences.items().apply(lambda x: x[1]).sum()
-        probabilities = {k: v/total for k, v in number_occurences.items()}
-        print(probabilities)
+        probabilities = [v/total for _, v in number_occurences.items()]
+        entropy = 0
+        for probability in probabilities:
+            entropy += probability * np.log2(probability)
 
-def information_gain(X, y):
+        return -entropy
+
+
+    def _choose_sub_classes(self):
+        pass
+
+
+def _entropy(X, y):
+        
+        entropies = np.empty(X.shape[1])
+
         for i in range(X.shape[1]):
             number_occurences = {}
             for j in range(X.shape[0]):
@@ -34,11 +46,17 @@ def information_gain(X, y):
                 else:
                     number_occurences[X[j, i]] = 1
         
-        total = sum([x[1] for x in list(number_occurences.items())])
-        probabilities = {k: v/total for k, v in number_occurences.items()}
-        print(probabilities)
+            total = sum([x[1] for x in list(number_occurences.items())])
+            probabilities = [v/total for _, v in number_occurences.items()]
+            entropy = 0
+            for probability in probabilities:
+                entropy += probability * np.log2(probability)
+
+            entropies[i] = (-entropy)
+            
+        return entropies
 
 d = Dataset()
 d.load(filename='notas.csv')
-information_gain(d.X, d.y)
+print(_entropy(d.X, d.y))
 
