@@ -50,8 +50,18 @@ class Dataset:
         
         # encode categorical_data
         categorical_data = self.label_encode(categorical_data)
+        print(f'===============> {numeric_data.shape}')
+        print(f'===============> {categorical_data.shape}')
+        if numeric_data.ndim == 1:
+            numeric_data = numeric_data.reshape(-1, 1)
 
-        data = np.empty_like(np.concatenate((numeric_data, categorical_data), axis=1))
+        if categorical_data.ndim == 1:
+            categorical_data = categorical_data.reshape(-1, 1)
+
+        print(f'===============> {numeric_data.shape}')
+        print(f'===============> {categorical_data.shape}')
+
+        data = np.empty_like(np.hstack((numeric_data, categorical_data)))
         data[:, self.nums] = numeric_data
         data[:, self.cats] = categorical_data
 
@@ -120,6 +130,6 @@ class Dataset:
 
 
 d = Dataset()
-d.load('teste.csv')
+d.load('notas.csv')
 print(d.describe())
 #print(d.count_missing_values())
