@@ -2,9 +2,6 @@ import numpy as np
 
 class Dataset:
     def __init__(self):
-        """
-            TODO: Deveríamos guardar os "encodings"?
-        """
         self.X = None
         self.y = None
         self.feature_names = None
@@ -45,11 +42,12 @@ class Dataset:
         """
         self.__read_datatypes(filename, sep)
 
-        numeric_data = np.genfromtxt(filename, delimiter=sep, usecols=self.nums, skip_header=True, filling_values=np.nan, missing_values='')
-        categorical_data = np.genfromtxt(filename, delimiter=sep, usecols=self.cats, skip_header=True, filling_values=np.nan, missing_values='')
+        numeric_data = np.genfromtxt(filename, delimiter=sep, usecols=self.nums, skip_header=True)#, filling_values=np.nan, missing_values='')
+        categorical_data = np.genfromtxt(filename, delimiter=sep, dtype='U32', usecols=self.cats, skip_header=True, missing_values='')#, filling_values=np.nan, )
         
+        print(categorical_data)
         # encode categorical_data
-        categorical_data = self.label_encode(categorical_data)
+        categorical_data, encoding_dict = self.label_encode(categorical_data)
 
         if numeric_data.ndim == 1:
             numeric_data = numeric_data.reshape(-1, 1)
@@ -64,6 +62,8 @@ class Dataset:
         self.X = np.array(data)[:, :-1]
         self.y = np.array(data)[:, -1]
 
+        print(encoding_dict)
+
         print(self.X)
 
         if label_name:
@@ -71,18 +71,28 @@ class Dataset:
 
     def label_encode(self, arr):
         encoded_arr = np.empty_like(arr)
+        encoding_dicts = []
+        encoding_dict = {}
 
         if len(arr.shape) == 1:
             unique_vals, encoded_arr[:] = np.unique(arr[:], return_inverse=True)
-            #mask = np.isnan(arr[:])
-            #encoded_arr[:] = np.where(mask, np.nan, encoded_arr[:])
+            #missing_indices = np.where(arr[:] == '')[0]
+            #encoded_arr[:] = np.where(missing_indices, np.nan, encoded_arr[:])
+            for i in range(len(unique_vals)):
+                encoding_dict[unique_vals[i]] = i
+            encoding_dicts.append(encoding_dict)
         else: 
             for i in range(arr.shape[1]):
                 unique_vals, encoded_arr[:,i] = np.unique(arr[:,i], return_inverse=True)
-                mask = np.isnan(arr[:,i])
-                encoded_arr[:,i] = np.where(mask, np.nan, encoded_arr[:,i])
+                # missing_indices = np.where(arr[:,i] == '')[0]
+                # encoded_arr[:,i] = np.where(missing_indices, np.nan, encoded_arr[:,i])
+                for j in range(len(unique_vals)):
+                    encoding_dict[unique_vals[j]] = j
+                encoding_dicts.append(encoding_dict)
+                encoding_dict = {}
 
-        return encoded_arr
+        return encoded_arr, encoding_dicts
+
 
     def describe(self):
         print('Dataset summary:')
@@ -103,8 +113,42 @@ class Dataset:
             print(f'  Std: {np.nanstd(col)}')
             print(f'  Number of missing values: {np.sum(np.isnan(col))}')
 
+    def train_test_split(self, test_size=0.2, random_state=None):
+        """
+        Divide o conjunto de dados em conjuntos de treinamento e teste.
+
+        Parâmetros:
+        X: array de features
+        y: array de saídas
+        test_size: float, proporção do conjunto de teste
+        random_state: int, semente para o gerador de números aleatórios
+
+        Retorna:
+        X_train: array de features de treinamento
+        X_test: array de features de teste
+        y_train: array de saídas de treinamento
+        y_test: array de saídas de teste
+        """
+
+        if random_state:
+            np.random.seed(random_state)
+
+        n_samples = self.X.shape[0]
+        n_test = int(n_samples * test_size)
+        indices = np.arange(n_samples)
+        np.random.shuffle(indices)
+        test_indices = indices[:n_test]
+        train_indices = indices[n_test:]
+
+        X_train = self.X[train_indices]
+        y_train = self.y[train_indices]
+        X_test = self.X[test_indices]
+        y_test = self.y[test_indices]
+
+        return X_train, X_test, y_train, y_test
+
     def count_missing_values(self):
-        return np.sum(np.isnan(self.X))
+        return np.sum(np.isnan(self.X), axis=0)
 
     def replace_missing_values(self, method='most_frequent'):
         if method == 'most_frequent':
@@ -132,6 +176,6 @@ class Dataset:
 
 
 d = Dataset()
-d.load('notas.csv')
+d.load('notas.csv', sep=',')
 print(d.describe())
-#print(d.count_missing_values())
+print(d.train_test_split())
