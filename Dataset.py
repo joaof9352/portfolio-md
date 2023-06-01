@@ -93,6 +93,23 @@ class Dataset:
 
         return encoded_arr, encoding_dicts
 
+    def dropna(self):
+        """
+        Remove rows with missing values from the dataset.
+        """
+        # Find indices of rows with missing numeric values
+        numeric_missing = np.isnan(self.X.astype(float)).any(axis=1)
+
+        # Find indices of rows with missing string values
+        string_missing = np.char.strip(self.X.astype(str)) == ''
+        string_missing = string_missing.any(axis=1)
+
+        # Combine missing indices
+        missing_indices = numeric_missing | string_missing
+
+        # Filter X and y based on the indices
+        self.X = self.X[~missing_indices]
+        self.y = self.y[~missing_indices]
 
     def describe(self):
         print('Dataset summary:')
