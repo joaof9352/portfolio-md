@@ -1,6 +1,7 @@
 from typing import Callable
 import numpy as np
 from f_classif import f_classif
+from f_regression import f_regression
 from Dataset import Dataset
 
 class SelectKBest:
