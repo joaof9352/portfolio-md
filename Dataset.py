@@ -190,3 +190,14 @@ class Dataset:
                     print(f'Warning: column {i} is not numeric, skipping')
         else:
             raise ValueError(f'Invalid method "{method}" for replacing missing values')
+
+    def getClasses(self):
+        if self.y is None:
+            raise ValueError("Dataset does not have a label")
+        return np.unique(self.y)
+
+    def setDataset(self, x, y, feature_names, label_name):
+        self.X = x
+        self.y = y
+        self.feature_names = feature_names
+        self.label_name = label_name
