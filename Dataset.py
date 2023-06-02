@@ -45,7 +45,6 @@ class Dataset:
         numeric_data = np.genfromtxt(filename, delimiter=sep, usecols=self.nums, skip_header=True)#, filling_values=np.nan, missing_values='')
         categorical_data = np.genfromtxt(filename, delimiter=sep, dtype='U32', usecols=self.cats, skip_header=True, missing_values='')#, filling_values=np.nan, )
         
-        print(categorical_data)
         # encode categorical_data
         categorical_data, encoding_dict = self.label_encode(categorical_data)
 
@@ -57,14 +56,11 @@ class Dataset:
 
         data = np.empty_like(np.hstack((numeric_data, categorical_data)))
         data[:, self.nums] = numeric_data
-        data[:, self.cats] = categorical_data
+        if len(self.cats) > 0:
+            data[:, self.cats] = categorical_data
 
         self.X = np.array(data)[:, :-1]
         self.y = np.array(data)[:, -1]
-
-        print(encoding_dict)
-
-        print(self.X)
 
         if label_name:
             self.label_name = label_name
@@ -190,9 +186,3 @@ class Dataset:
                     print(f'Warning: column {i} is not numeric, skipping')
         else:
             raise ValueError(f'Invalid method "{method}" for replacing missing values')
-
-
-d = Dataset()
-d.load('notas.csv', sep=',')
-print(d.describe())
-print(d.train_test_split())

@@ -82,7 +82,7 @@ d.dropna()
 n = NaiveBayes()
 
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(d.X, d.y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(d.X, d.y, test_size=0.2, random_state=2023)
 
 n.fit(X_train, y_train)
 print(n.calcAcc(X_test, y_test))    
