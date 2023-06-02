@@ -39,9 +39,6 @@ class LinearRegression:
 
     def predict(self, instance):
         x = np.hstack((np.ones((instance.shape[0], 1)), instance))
-        print(x.shape)
-        print(x)
-        print(self.theta.transpose())
         if self.normalized:
             x[1:] = (x[1:] - self.mu) / self.sigma
         return np.dot(self.theta, x.transpose())

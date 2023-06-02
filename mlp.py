@@ -79,20 +79,9 @@ def sigmoid(x):
 def test():
     ds= Dataset()
     ds.load("numeros.csv")
-    nn = MLP(ds, 2)
-    w1 = np.array([[-30,20,20],[10,-20,-20]])
-    w2 = np.array([[-10,20,20]])
-    nn.setWeights(w1, w2)
-    print(nn.predict(np.array([5,14,10,21,32,8,1])))
-    print(nn.costFunction())
-
-def test2():
-    ds= Dataset()
-    ds.load("numeros.csv")
     nn = MLP(ds, 2, normalize = False)
     nn.build_model()
     print(nn.predict(np.array([5,14,10,21,32,8,1])))
     print(nn.costFunction())
     
-#test()
-test2()
+test()

@@ -66,8 +66,6 @@ class Dataset:
         self.X = np.array(data)[:, :-1]
         self.y = np.array(data)[:, -1]
 
-        print(self.X)
-
         if label_name:
             self.label_name = label_name
 
