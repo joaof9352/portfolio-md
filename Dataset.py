@@ -45,22 +45,28 @@ class Dataset:
         numeric_data = np.genfromtxt(filename, delimiter=sep, usecols=self.nums, skip_header=True)#, filling_values=np.nan, missing_values='')
         categorical_data = np.genfromtxt(filename, delimiter=sep, dtype='U32', usecols=self.cats, skip_header=True, missing_values='')#, filling_values=np.nan, )
         
-        # encode categorical_data
-        categorical_data, encoding_dict = self.label_encode(categorical_data)
 
         if numeric_data.ndim == 1:
             numeric_data = numeric_data.reshape(-1, 1)
 
         if categorical_data.ndim == 1:
             categorical_data = categorical_data.reshape(-1, 1)
-
-        data = np.empty_like(np.hstack((numeric_data, categorical_data)))
-        data[:, self.nums] = numeric_data
+        
         if len(self.cats) > 0:
+            
+            #Label Encoder
+            categorical_data, encoding_dict = self.label_encode(categorical_data)
+        
+            data = np.empty_like(np.hstack((numeric_data, categorical_data)))
+            data[:, self.nums] = numeric_data
             data[:, self.cats] = categorical_data
+        else:
+            data = numeric_data
 
         self.X = np.array(data)[:, :-1]
         self.y = np.array(data)[:, -1]
+
+        print(self.X)
 
         if label_name:
             self.label_name = label_name

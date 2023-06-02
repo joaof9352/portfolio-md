@@ -1,6 +1,7 @@
 import numpy as np
 from Dataset import Dataset
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 class Prism:
     def __init__(self, alpha=1.0):
@@ -48,9 +49,10 @@ class Prism:
                 class_probs = self.class_probs[i]
                 feature_probs = self.feature_probs[i]
                 sample_float = np.array(sample).astype(float)
+                sample_float = np.where(np.isnan(sample_float), 0, sample_float)  # Replace NaN with 0
                 sample_float = np.where(sample_float == '', 0, sample_float)  # Replace empty strings with 0
                 sample_float = np.clip(sample_float, 0, np.max(sample_float))  # Ensure non-negative values
-                prob = np.prod(feature_probs[:, sample_float.astype(int)]) * class_probs
+                prob = np.prod(feature_probs.reshape((1, -1))[:, sample_float.astype(int)]) * class_probs
                 if prob > max_prob:
                     max_prob = prob
                     predicted_class = cls
