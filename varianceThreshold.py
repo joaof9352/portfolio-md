@@ -29,7 +29,7 @@ class VarianceThreshold:
         features = np.array(dataset.feature_names)[new_features]
 
         d = Dataset()
-        d.setDataset(x=dataset.X, y=dataset.y, feature_names=list(features), label_name=dataset.label_name)
+        d.setDataset(x=X, y=dataset.y, feature_names=list(features), label_name=dataset.label_name)
 
         return d
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     dataset.load(filename='numeros.csv')
 
     # Create an instance of SelectKBest
-    threshold = 1.0
+    threshold = 25.0
     variance_threshold = VarianceThreshold(threshold=threshold)
 
     # Fit and transform the dataset

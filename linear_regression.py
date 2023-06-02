@@ -95,7 +95,7 @@ class LinearRegression:
 d = Dataset()
 d.load(filename='numeros.csv')
 
-X_train, X_test, y_train, y_test = train_test_split(d.X, d.y, test_size=0.2, random_state=2023)
+X_train, X_test, y_train, y_test = d.train_test_split(test_size=0.2, random_state=2023)
 
 # Convert X_train and y_train to float data type
 X_train = X_train.astype(float)
@@ -105,3 +105,4 @@ model = LinearRegression(X_train, y_train)
 model.fit()
 preds = model.predict(X_test)
 print(preds)
+print(y_test)

@@ -53,19 +53,16 @@ class Apriori:
         return count / len(self.dataset.transactions)
 
     def _generate_frequent_itemsets(self, k):
-        candidate_itemsets = self._generate_candidate_itemsets(self.frequent_items, k)
-        for itemset, _ in candidate_itemsets:
-            support = self._calculate_support(itemset)
-            if support >= self.min_support:
-                self.frequent_items.append((itemset, support))
-        return len(candidate_itemsets) > 0
+        # candidate_itemsets = self._generate_candidate_itemsets(self.frequent_items, k)
+        # for itemset, _ in candidate_itemsets:
+        #     support = self._calculate_support(itemset)
+        #     if support >= self.min_support:
+        #         self.frequent_items.append((itemset, support))
+        # return len(candidate_itemsets) > 0
+        pass
 
     def _generate_association_rules(self, itemset, remaining_itemset):
-        rules = []
-        for item in remaining_itemset:
-            rule = (itemset - item, item)
-            rules.append(rule)
-        return rules
+        pass
 
     def mine(self):
         k = 5
