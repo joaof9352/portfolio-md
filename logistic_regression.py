@@ -1,15 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-@author: miguelrocha
-"""
-
 import numpy as np
-from dataset import Dataset
+from Dataset import Dataset
 
 class LogisticRegression:
     
     def __init__(self, dataset, normalize = False, regularization = False, lamda = 1):
-        self.X, self.y = dataset.getXy()
+        self.X, self.y = dataset.X, dataset.y
         self.X = np.hstack ( (np.ones([self.X.shape[0],1]), self.X ) )
         self.theta = np.zeros(self.X.shape[1])
         self.regularization = regularization
@@ -68,7 +63,7 @@ class LogisticRegression:
         return res
     
     def probability(self, instance):
-        x = np.empty([self.X.shape[1]])        
+        x = np.empty([self.X.shape[1]])     
         x[0] = 1
         x[1:] = np.array(instance[:self.X.shape[1]-1])
         if self.normalized:
@@ -205,8 +200,9 @@ def mapFeature(X1, X2, degrees = 6):
 
 # main - tests
 def test():
-    ds= Dataset("log-ex1.data")   
-    logmodel = LogisticRegression(ds)
+    d = Dataset()
+    d.load("numeros.csv")   
+    logmodel = LogisticRegression(d)
     logmodel.plotData()    
     print ("Initial cost: ", logmodel.costFunction())
     # result: 0.693
@@ -219,38 +215,8 @@ def test():
     logmodel.plotModel()
     print ("Final cost:", logmodel.costFunction())
     
-    ex = np.array([45,65])
+    ex = np.array([5,14,10,21,32,8,1])
     print ("Prob. example:", logmodel.probability(ex))
     print ("Pred. example:", logmodel.predict(ex))
-    
 
-def testreg():
-    
-    ds= Dataset("log-ex2.data")   
-       
-    logmodel = LogisticRegression(ds)
-    logmodel.plotData()
-    logmodel.mapX()
-    logmodel.printCoefs()
-
-    print (logmodel.costFunction())
-    logmodel.optim_model_reg(1)
-    logmodel.printCoefs()
-    print (logmodel.costFunction())
-    logmodel.plotModel2()    
-    
-def testdataset():
-    ds = Dataset("datasets/hearts-bin.data")
-    #ds.process_binary_y()
-
-    model = LogisticRegression(ds, True, regularization = True, lamda = 10)
-    
-    print (model.holdout())
-#    model.buildModel()
-#    print(model.costFunction())
-#    model.printCoefs()     
-
-if __name__ == '__main__':
-    #test()
-    testreg()
-    #testdataset()
+test()
