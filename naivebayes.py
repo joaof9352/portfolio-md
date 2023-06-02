@@ -77,7 +77,7 @@ class NaiveBayes:
         return accuracy_score(y_test, preds)
     
 d = Dataset()
-d.load(filename='notas.csv')
+d.load(filename='numeros.csv')
 d.dropna()
 n = NaiveBayes()
 

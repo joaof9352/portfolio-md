@@ -49,8 +49,6 @@ class Prism:
                 class_probs = self.class_probs[i]
                 feature_probs = self.feature_probs[i]
                 sample_float = np.array(sample).astype(float)
-                sample_float = np.where(np.isnan(sample_float), 0, sample_float)  # Replace NaN with 0
-                sample_float = np.where(sample_float == '', 0, sample_float)  # Replace empty strings with 0
                 sample_float = np.clip(sample_float, 0, np.max(sample_float))  # Ensure non-negative values
                 prob = np.prod(feature_probs.reshape((1, -1))[:, sample_float.astype(int)]) * class_probs
                 if prob > max_prob:
